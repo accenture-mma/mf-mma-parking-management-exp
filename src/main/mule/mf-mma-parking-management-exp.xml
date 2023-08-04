@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	
+	<sub-flow name="mf-mma-parking-management-exp-sub-flow" doc:id="41810b6f-d60f-400b-a44a-84861dab508f" >
+		<ee:transform doc:name="Transform Message" doc:id="0b4aa327-4152-45c4-8f6a-0301003cef09" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+   "slotNumber":payload.slotNumber,
+   "dateTime": payload.dateTime,
+   "occupany":if(payload.status == 1)true else false,
+   "carNumber":payload.carNumber,
+   "email": payload.email,
+   "phone": payload.phone,
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="c3092845-dee1-40f5-92a3-34f1847d90f8" message='"Payload received from IOT device" #[payload]'/>
+		<http:request method="POST" doc:name="Request call to system API" doc:id="141f00fe-1fb4-4422-a8d1-61bf6bb77466" config-ref="HTTP_Request_configuration" path="#[Mule::p('sys.basePath')++ Mule::p('sys.park')]">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"client_secret" : Mule::p('secure::sys.client_secret'),
+	"client_id" : Mule::p('sys.client_id')
+}]]]></http:headers>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="d452376a-b057-40f5-9fdf-cb0ddf6f11c7" message='#["payload sent to system layer"]'/>
+	</sub-flow>
+</mule>

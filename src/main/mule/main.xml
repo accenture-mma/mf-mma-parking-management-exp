@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+<flow name="post:\mma\park:application\json:mf-mma-parking-management-exp-config">
+		<set-variable value='#[payload.carNumber]' doc:name="carNumber" doc:id="4768d97f-8925-4688-9fef-526980f7fa01" variableName="carNumber" />
+		<flow-ref doc:name="mf-mma-parking-management-exp-sub-flow" doc:id="fa81cc58-5427-4aec-8515-c3a42fd1f9f8" name="mf-mma-parking-management-exp-sub-flow"/>
+    </flow>
+</mule>
